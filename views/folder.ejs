@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= item.name %> - WiFile
+    </title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            --background: 255, 255, 255;
+            --midground: 237, 237, 237;
+            --contrast: 50, 50, 50;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: 51, 51, 51;
+                --midground: 68, 68, 68;
+                --contrast: 238, 238, 238;
+            }
+        }
+
+        body {
+            margin: 2em;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            background: rgb(var(--background));
+            color: rgb(var(--contrast));
+        }
+
+        body > div {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 1em;
+        }
+        body > div:empty {
+            /* display: none; */
+            border: 1px solid red;
+        }
+        
+        a {
+            width: max-content;
+            max-width: 100%;
+            overflow: hidden;
+            padding: 1em 1.7em;
+            border-radius: 1em;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease-in-out;
+        }
+
+        a:hover,
+        a:focus {
+            outline: none;
+            box-shadow:
+                0 0 0 2px rgb(var(--contrast)) inset,
+                0 5px 15px 0 rgba(var(--contrast), 0.2);
+            /* padding: 1em 1.7em; */
+            text-decoration: underline;
+        }
+
+        a.discrete {
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .folder {
+            background-color: rgb(var(--midground));
+        }
+
+        .file {
+            box-shadow: 0 0 0 5px rgb(var(--midground)) inset;
+        }
+        .file > span {
+            opacity: 0.5;
+            margin-top: 0.4em;
+            margin-left: 0.5em;
+            font-size: 0.7em;
+            float: inline-end;
+            /* align to bottom */
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <% if (item.path !='' && item.path !='/' ) { %>
+        <% const pathArray=item.path.split('/') %>
+        <% const parent=pathArray[pathArray.length - 2] || 'home' %>
+        <% const url=pathArray.slice(0, pathArray.length - 1).join('/') %>
+        <a href="/<%= url %>" class="discrete">&#8593;&nbsp;&nbsp;&nbsp; <%= parent %></a>
+    <% } %>
+
+    <h1><%= item.name %></h1>
+
+    <% if (item.items.length === 0) { %>
+        <p>This folder is empty</p>
+    <% } %>
+
+    <div>
+        <% item.items.forEach(function(subitem){ %>
+            <% if(subitem.type=='folder' ){ %>
+                <a href="/<%= subitem.path %>" class="folder">
+                    <%= subitem.name %>
+                </a>
+            <% } %>
+        <% }) %>
+    </div>
+    
+    <div>
+        <% item.items.forEach(function(subitem){ %>
+            <% if(subitem.type=='file' ){ %>
+                <a href="/<%= subitem.path %>" class="file">
+                    <%= subitem.name %> <span class="filesize"><%= subitem.size %></span>
+                </a>
+            <% } %>
+        <% }) %>
+    </div>
+
+</body>
+
+</html>

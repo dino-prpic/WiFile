@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
+    <link href="./general.css" rel="stylesheet">
+    <link href="./title.css" rel="stylesheet">
+    <link href="./content.css" rel="stylesheet">
+    <title>WiFile</title>
+</head>
+
+<body>
+    <header class="title-bar">
+        <div id="window-title">WiFile</div>
+        <div id="window-actions">
+            <button id="minimize">&minus;</button>
+            <button id="maximize">&plus;</button>
+            <button id="close">&times;</button>
+        </div>
+    </header>
+    <div class="content">
+        <div class="input-group" id="server-actions">
+            <span id="server-info"></span>
+            <input type="number" name="Port" id="port-input" placeholder="Port" 
+            min="1024" max="65535" value="8080" style="width:60px;">
+            <button id="server-on">Start Server</button>
+            <button id="server-off" disabled>Stop Server</button>
+        </div>
+        <div id="file-actions">
+            <div class="input-group">
+                <span id="project-info"></span>
+                <button id="folder-picker">Choose Folder</button>
+                <button id="file-picker">Choose File</button>
+            </div>
+            <div id="drop-area">or drag and drop here</div>
+        </div>
+    </div>
+
+    <!-- You can also require other files to run in this process -->
+    <script src="./renderer.js"></script>
+</body>
+
+</html>

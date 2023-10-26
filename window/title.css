@@ -1,0 +1,27 @@
+.title-bar {
+    -webkit-app-region: drag;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.title-bar > #window-title {
+    padding: 0 1em;
+}
+.title-bar > #window-actions {
+    display: flex;
+}
+.title-bar > #window-actions > button {
+    -webkit-app-region: no-drag;
+    width: 40px;
+    padding: 0.3em 0;
+    font-size: 1.5em;
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+}
+.title-bar > #window-actions > button:hover,
+.title-bar > #window-actions > button:focus {
+    box-shadow: none;
+    text-decoration: none;
+    background-color: rgb(var(--mid));
+}

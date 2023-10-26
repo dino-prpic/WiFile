@@ -1,0 +1,6 @@
+dist
+preferences.json
+
+node_modules
+.idea
+.vscode
