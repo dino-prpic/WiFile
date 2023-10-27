@@ -1,35 +1,31 @@
 const os = require('os')
 const express = require('express')
+const path = require('path')
 
 const app = express()
 let server
 
+app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 app.get('/*', (req, res) => {
     if (!global.project) {
-        console.log('No project loaded')
         return res.sendStatus(404)
     }
-    // const mode = req.params[0].match(/@json|@download$/)?.[0]?.replace('@', '')
-    // console.log('mode', mode)
-    // const projectPath = req.params[0].replace(/@json|@download$/, '')
     let projectPath = req.params[0]
 
     let mode
     for (const key of ['json', 'download']) {
         if (projectPath.endsWith('@' + key)) {
             mode = key
-            // remove char + key
             projectPath = projectPath.slice(0, -1 - key.length)
             break
         }
     }
-    console.log('mode', mode)
-    console.log('projectPath', projectPath)
 
     const pathArray = projectPath.split('/')
     const item = global.project.search(pathArray)
+
     if (!item) return res.sendStatus(404)
     if (mode === 'json') return res.json(item.toJSON(global.project.path))
     if (item.isFile && mode === 'download') return res.download(item.path)
@@ -38,24 +34,24 @@ app.get('/*', (req, res) => {
 })
 const api = {
     start: (port) => {
-        console.log('Starting server...')
         return new Promise((resolve, reject) => {
-            if (server) return reject('Server is already running')
+            if (!global.project) return reject({ running: false, err: 'Nothing is being shared' })
+            if (server) return reject({ running: true, err: 'Server is already running' })
             server = app.listen(port, () => {
-                const msg = `Server ON @ http://${getLocalIpAddress()}:${port}`
-                console.log(msg)
-                resolve(msg)
+                resolve({
+                    running: true,
+                    port,
+                    localIP: getLocalIpAddress()
+                })
             })
         })
     },
     stop: () => {
         return new Promise((resolve, reject) => {
-            if (!server) return reject('Server is not running')
+            if (!server) return reject({ running: false, err: 'Server is not running' })
             server.close(() => {
                 server = null
-                const msg = 'Server OFF'
-                console.log(msg)
-                resolve(msg)
+                resolve({running: false})
             })
         })
     }

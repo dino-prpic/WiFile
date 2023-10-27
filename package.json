@@ -1,14 +1,17 @@
 {
-    "name": "electron-quick-start",
+    "name": "wi-file",
     "version": "1.0.0",
-    "description": "A minimal Electron application",
+    "description": "A simple file sharing server app for Windows, Linux and Mac",
     "main": "main.js",
     "scripts": {
         "start": "electron .",
-        "build": "electron-builder"
+        "buildDev": "electron-builder"
     },
-    "repository": "https://github.com/electron/electron-quick-start",
+    "repository": "https://github.com/dino-prpic/WiFile",
+    "author": "Dino Prpić",
+    "license": "MIT",
     "dependencies": {
+        "ejs": "^3.1.9",
         "express": "^4.18.2"
     },
     "devDependencies": {
@@ -17,18 +20,22 @@
     },
     "build": {
         "appId": "com.example.myapp",
-        "productName": "My App",
+        "productName": "WiFile",
         "directories": {
             "output": "dist"
         },
         "mac": {
-            "category": "public.app-category.utilities"
+            "category": "public.app-category.utilities",
+            "icon": "icon.png"
         },
         "win": {
-            "target": "nsis"
+            "target": "nsis",
+            "icon": "icon.png"
         }
     },
     "electronmon": {
-      "patterns": ["!preferences.json"]
+        "patterns": [
+            "!preferences.json"
+        ]
     }
 }

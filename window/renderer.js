@@ -1,12 +1,9 @@
-// const { ipcMain } = require("electron")
-
 if(window.myAPI) {
     createWindowActions()
     createServerActions()
     createFileActions()
     myAPI.send('finished-loading')
 }
-
 
 function createWindowActions() {
 
@@ -20,7 +17,6 @@ function createWindowActions() {
     closeBtn.onclick = () => myAPI.send('window-close')
 
 }
-
 function createServerActions() {
 
     const portInput = document.getElementById('port-input')
@@ -30,29 +26,32 @@ function createServerActions() {
 
     serverOnBtn.onclick = () => {
         myAPI.send('server-start', parseInt(portInput.value))
-        portInput.disabled = true
-        serverOnBtn.disabled = true
-        serverOffBtn.disabled = false
     }
     serverOffBtn.onclick = () => {
         myAPI.send('server-stop')
-        portInput.disabled = false
-        serverOnBtn.disabled = false
-        serverOffBtn.disabled = true
     }
 
     myAPI.receive('server-info', (data) => {
-        serverInfo.innerHTML = data
-    })
-    myAPI.receive('port', (data) => {
-        portInput.value = data
+        if (data.port) portInput.value = data.port
+        portInput.disabled = data.running
+        serverOnBtn.disabled = data.running
+        serverOffBtn.disabled = !data.running
+        let msg = 'Server'
+        data.running 
+          ? msg += ' ON' 
+          : msg += ' OFF '
+        if (data.localIP && data.port) {
+            const url = 'http://' + data.localIP + ':' + data.port
+            msg += ' @ ' + url
+        }
+        if (data.err) {
+            msg += ' - Error: ' + data.err
+        }
+        serverInfo.innerHTML = msg
     })
 
 }
-
 function createFileActions() {
-    
-    const fileActions = document.getElementById('file-actions')
 
     const folderPicker = document.getElementById('folder-picker')
     folderPicker.addEventListener('click', async () => {
@@ -75,19 +74,19 @@ function createFileActions() {
         event.preventDefault()
         const path = event.dataTransfer.files[0].path
         myAPI.send('project-open', { path })
-        fileActions.classList.remove('dragover')
+        dropArea.classList.remove('dragover')
     })
     dropArea.addEventListener('dragover', (event) => {
         event.preventDefault()
-        fileActions.classList.add('dragover')
+        dropArea.classList.add('dragover')
     })
     dropArea.addEventListener('dragenter', (event) => {
         event.preventDefault()
-        fileActions.classList.add('dragover')
+        dropArea.classList.add('dragover')
     })
     dropArea.addEventListener('dragleave', (event) => {
         event.preventDefault()
-        fileActions.classList.remove('dragover')
+        dropArea.classList.remove('dragover')
     })
 }
 

@@ -8,10 +8,8 @@ class Folder extends Array {
         if (!folderPath) return 
         if (!fs.existsSync(folderPath)) throw new Error(`Folder does not exist: ${folderPath}`)
         this.path = folderPath
-        // this.read()
     }
     read() {
-        console.log('reading', this.path)
         this.length = 0
         const files = fs.readdirSync(this.path)
         files.forEach(name => {
