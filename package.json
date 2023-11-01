@@ -11,6 +11,7 @@
     "author": "Dino Prpić",
     "license": "MIT",
     "dependencies": {
+        "@homebridge/ciao": "^1.1.7",
         "ejs": "^3.1.9",
         "express": "^4.18.2"
     },

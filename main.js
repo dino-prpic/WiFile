@@ -129,6 +129,7 @@ if (!gotSingleLock) {
 
     // quit when all windows are closed
     app.on('window-all-closed', function () {
+        if (server.running) server.stop()
         if (process.platform !== 'darwin') app.quit()
     })
 

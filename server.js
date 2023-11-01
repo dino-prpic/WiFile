@@ -1,9 +1,13 @@
 const os = require('os')
-const express = require('express')
 const path = require('path')
+const express = require('express')
+const ciao = require("@homebridge/ciao").getResponder()
+
+// create a service defining a web server running on port 3000
 
 const app = express()
-let server
+let server,
+    advertisement
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
@@ -32,16 +36,28 @@ app.get('/*', (req, res) => {
     if (item.isFile) return res.sendFile(item.path)
     res.render('folder', { item: item.toJSON(global.project.path) })
 })
+
+
+
 const api = {
     start: (port) => {
         return new Promise((resolve, reject) => {
             if (!global.project) return reject({ running: false, err: 'Nothing is being shared' })
             if (server) return reject({ running: true, err: 'Server is already running' })
+            const localIP = getLocalIpAddress()
+            advertisement = ciao.createService({
+                name: 'WiFile',
+                type: 'supercast',
+                port
+            })
             server = app.listen(port, () => {
+                advertisement.advertise().catch(err => {
+                    console.log('Error advertising service:', err.message)
+                })
                 resolve({
                     running: true,
                     port,
-                    localIP: getLocalIpAddress()
+                    localIP
                 })
             })
         })
@@ -51,9 +67,14 @@ const api = {
             if (!server) return reject({ running: false, err: 'Server is not running' })
             server.close(() => {
                 server = null
+
+                advertisement.end()
                 resolve({running: false})
             })
         })
+    },
+    get running() {
+        return !!server
     }
 }
 
